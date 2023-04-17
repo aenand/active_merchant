@@ -233,6 +233,8 @@ module ActiveMerchant #:nodoc:
       end
 
       def commit(action, parameters)
+        get_gateway_version(parameters)
+
         url = url_for((test? ? test_url : live_url), action, parameters)
 
         response = parse(ssl_request(HTTP_METHOD[action], url, post_data(action, parameters), headers(parameters)))
@@ -250,10 +252,10 @@ module ActiveMerchant #:nodoc:
       end
 
       def headers(params)
-        super
+        commit_headers = super
 
         processing_type = params[:processing_type]
-        commit_headers = { 'x-ebanx-client-user-agent': "ActiveMerchant/#{ActiveMerchant::VERSION}" }
+        commit_headers['content-type'] =  "ActiveMerchant/#{ActiveMerchant::VERSION}"
 
         add_processing_type_to_commit_headers(commit_headers, processing_type) if processing_type == 'local'
 
