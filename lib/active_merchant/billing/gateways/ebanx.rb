@@ -1,6 +1,10 @@
+require 'active_merchant/billing/gateways/ebanx/ebanx_v2'
+
 module ActiveMerchant #:nodoc:
   module Billing #:nodoc:
     class EbanxGateway < Gateway
+      include EbanxV2
+
       self.test_url = 'https://sandbox.ebanxpay.com/ws/'
       self.live_url = 'https://api.ebanxpay.com/ws/'
 
@@ -246,6 +250,8 @@ module ActiveMerchant #:nodoc:
       end
 
       def headers(params)
+        super
+
         processing_type = params[:processing_type]
         commit_headers = { 'x-ebanx-client-user-agent': "ActiveMerchant/#{ActiveMerchant::VERSION}" }
 
